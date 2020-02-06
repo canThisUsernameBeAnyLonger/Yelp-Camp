@@ -9,6 +9,7 @@ var passport=require("passport");
 var LocalStrategy=require("passport-local");
 var User=require("./models/user");
 var mehtodOverride=require("method-override");
+var flash=require("connect-flash");
 
 var commentRoutes=require("./routes/comments");
 var campgroundRoutes=require("./routes/campgrounds");
@@ -24,6 +25,8 @@ app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(mehtodOverride("_method"));
 
+app.use(flash());
+
 app.use(require("express-session")({
 	secret: "Secret passage idk",
 	resave: false,
@@ -37,6 +40,8 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use(function(req,res,next){
 	res.locals.currentUser=req.user;
+	res.locals.error=req.flash("error");
+	res.locals.success=req.flash("success");
 	next();
 });
 
